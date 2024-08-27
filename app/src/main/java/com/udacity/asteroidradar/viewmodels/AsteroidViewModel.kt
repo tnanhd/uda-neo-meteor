@@ -22,7 +22,10 @@ import kotlinx.coroutines.launch
 class AsteroidViewModel(application: Application) : AndroidViewModel(application) {
     private val database = getDatabase(application)
     private val asteroidRepository = AsteroidRepository(database)
-    val asteroids: LiveData<List<Asteroid>> = asteroidRepository.asteroids
+
+    private val _asteroids = MutableLiveData<List<Asteroid>>()
+    val asteroids: LiveData<List<Asteroid>>
+        get() = _asteroids
 
     private val _apiStatus = MutableLiveData<ApiStatus>()
     val showLoadingView: LiveData<Int>
@@ -46,13 +49,24 @@ class AsteroidViewModel(application: Application) : AndroidViewModel(application
         _navigateToSelectedAsteroid.value = null
     }
 
+    fun updateAsteroidsFilter(endDate: String? = null) {
+        viewModelScope.launch {
+            loadAsteroidsFromDatabase(endDate = endDate)
+        }
+    }
+
     init {
         viewModelScope.launch {
             loadPictureOfDay()
             _apiStatus.value = ApiStatus.LOADING
             refreshAsteroids()
+            loadAsteroidsFromDatabase()
             _apiStatus.value = ApiStatus.DONE
         }
+    }
+
+    private suspend fun loadAsteroidsFromDatabase(endDate: String? = null) {
+        _asteroids.value = asteroidRepository.getAsteroids(endDate = endDate)
     }
 
     private suspend fun refreshAsteroids() {

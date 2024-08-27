@@ -16,8 +16,11 @@ interface AsteroidDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg nearEarthObjects: DatabaseAsteroid)
 
-    @Query("SELECT * FROM databaseasteroid WHERE closeApproachDate >= :startDate ORDER BY closeApproachDate DESC")
-    fun getAsteroids(startDate: String = getCurrentDateString()): LiveData<List<DatabaseAsteroid>>
+    @Query("SELECT * FROM databaseasteroid WHERE closeApproachDate >= :startDate AND (:endDate IS NULL OR closeApproachDate <= :endDate) ORDER BY closeApproachDate DESC")
+    suspend fun getAsteroids(
+        startDate: String = getCurrentDateString(),
+        endDate: String? = null
+    ): List<DatabaseAsteroid>
 }
 
 @Database(entities = [DatabaseAsteroid::class], version = 1, exportSchema = false)

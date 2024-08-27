@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
+import com.udacity.asteroidradar.getCurrentDateString
+import com.udacity.asteroidradar.getCurrentDateStringPlusDays
 import com.udacity.asteroidradar.viewmodels.AsteroidViewModel
 
 class MainFragment : Fragment() {
@@ -52,10 +54,12 @@ class MainFragment : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.show_today_menu -> {
+                        viewModel.updateAsteroidsFilter(endDate = getCurrentDateString())
                         true
                     }
 
                     R.id.show_next_week_menu -> {
+                        viewModel.updateAsteroidsFilter(endDate = getCurrentDateStringPlusDays(7))
                         true
                     }
 
