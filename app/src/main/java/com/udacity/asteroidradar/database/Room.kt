@@ -15,7 +15,7 @@ interface AsteroidDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg nearEarthObjects: DatabaseAsteroid)
 
-    @Query("SELECT * FROM databaseasteroid")
+    @Query("SELECT * FROM databaseasteroid ORDER BY closeApproachDate DESC")
     fun getAsteroids(): LiveData<List<DatabaseAsteroid>>
 }
 

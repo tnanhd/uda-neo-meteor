@@ -2,9 +2,11 @@ package com.udacity.asteroidradar.main
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
 import com.udacity.asteroidradar.viewmodels.AsteroidViewModel
@@ -30,6 +32,30 @@ class MainFragment : Fragment() {
                 viewModelAdapter?.submitList(it)
             }
         }
+
+        val menuProvider = object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.main_overflow_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.show_today_menu -> {
+                        true
+                    }
+
+                    R.id.show_next_week_menu -> {
+                        true
+                    }
+
+                    R.id.show_saved_menu -> {
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }
+        requireActivity().addMenuProvider(menuProvider, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     override fun onCreateView(
@@ -42,21 +68,18 @@ class MainFragment : Fragment() {
         binding.viewModel = viewModel
 
         viewModelAdapter = AsteroidAdapter(AsteroidClickListener {
-            Toast.makeText(context, "clicked: $it", Toast.LENGTH_SHORT).show()
+            viewModel.displayAsteroidDetails(it)
         })
         binding.asteroidRecycler.adapter = viewModelAdapter
 
-        setHasOptionsMenu(true)
+        viewModel.navigateToSelectedAsteroid.observe(viewLifecycleOwner) {
+            it?.let {
+                this.findNavController()
+                    .navigate(MainFragmentDirections.actionShowDetail(it))
+                viewModel.displayAsteroidDetailsComplete()
+            }
+        }
 
         return binding.root
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.main_overflow_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return true
     }
 }
