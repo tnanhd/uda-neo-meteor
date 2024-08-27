@@ -6,11 +6,11 @@ import androidx.databinding.BindingAdapter
 import com.squareup.picasso.Picasso
 
 @BindingAdapter("statusIcon")
-fun bindAsteroidStatusImage(imageView: ImageView, isHazardous: Boolean) {
+fun ImageView.bindAsteroidStatusImage(isHazardous: Boolean) {
     if (isHazardous) {
-        imageView.setImageResource(R.drawable.ic_status_potentially_hazardous)
+        setImageResource(R.drawable.ic_status_potentially_hazardous)
     } else {
-        imageView.setImageResource(R.drawable.ic_status_normal)
+        setImageResource(R.drawable.ic_status_normal)
     }
 }
 

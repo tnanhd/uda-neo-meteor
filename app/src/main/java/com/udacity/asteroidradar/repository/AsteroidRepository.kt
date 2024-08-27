@@ -1,5 +1,6 @@
 package com.udacity.asteroidradar.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.udacity.asteroidradar.api.Network
@@ -16,10 +17,14 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
     val asteroids: LiveData<List<Asteroid>> =
         databaseAsteroids.map(List<DatabaseAsteroid>::asDomainModel)
 
-    suspend fun refreshNearEarthObjects() {
+    suspend fun refreshAsteroids() {
         withContext(Dispatchers.IO) {
-            val response = Network.asteroidService.getNearEarthObjects()
-            database.asteroidDao.insertAll(*response.asDatabaseModel())
+            try {
+                val response = Network.asteroidService.getSteroids()
+                database.asteroidDao.insertAll(*response.asDatabaseModel())
+            } catch (e: Exception) {
+                Log.e("refreshAsteroids", e.toString())
+            }
         }
     }
 

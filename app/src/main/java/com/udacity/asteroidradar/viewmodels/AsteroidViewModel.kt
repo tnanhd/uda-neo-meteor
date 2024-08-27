@@ -1,6 +1,7 @@
 package com.udacity.asteroidradar.viewmodels
 
 import android.app.Application
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -12,6 +13,7 @@ import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.api.ApiStatus
 import com.udacity.asteroidradar.api.Network
+import com.udacity.asteroidradar.api.isNetworkAvailable
 import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.domain.Asteroid
 import com.udacity.asteroidradar.repository.AsteroidRepository
@@ -54,7 +56,9 @@ class AsteroidViewModel(application: Application) : AndroidViewModel(application
     }
 
     private suspend fun refreshAsteroids() {
-        asteroidRepository.refreshNearEarthObjects()
+        if (isNetworkAvailable(getApplication())) {
+            asteroidRepository.refreshAsteroids()
+        }
     }
 
     private suspend fun loadPictureOfDay() {
@@ -62,6 +66,7 @@ class AsteroidViewModel(application: Application) : AndroidViewModel(application
             _pictureOfDay.value = Network.asteroidService.getPictureOfDay()
         } catch (e: Exception) {
             _pictureOfDay.value = null
+            Log.e("loadPictureOfDay", e.toString())
         }
     }
 

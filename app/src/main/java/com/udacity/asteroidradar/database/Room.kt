@@ -9,14 +9,15 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Room.databaseBuilder
 import androidx.room.RoomDatabase
+import com.udacity.asteroidradar.getCurrentDateString
 
 @Dao
 interface AsteroidDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg nearEarthObjects: DatabaseAsteroid)
 
-    @Query("SELECT * FROM databaseasteroid ORDER BY closeApproachDate DESC")
-    fun getAsteroids(): LiveData<List<DatabaseAsteroid>>
+    @Query("SELECT * FROM databaseasteroid WHERE closeApproachDate >= :startDate ORDER BY closeApproachDate DESC")
+    fun getAsteroids(startDate: String = getCurrentDateString()): LiveData<List<DatabaseAsteroid>>
 }
 
 @Database(entities = [DatabaseAsteroid::class], version = 1)
@@ -32,7 +33,7 @@ fun getDatabase(context: Context): AsteroidDatabase {
             INSTANCE = databaseBuilder(
                 context.applicationContext,
                 AsteroidDatabase::class.java,
-                "near_earth_objects"
+                "asteroids_database"
             )
                 .fallbackToDestructiveMigrationFrom()
                 .build()

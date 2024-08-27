@@ -2,7 +2,7 @@ package com.udacity.asteroidradar.api
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.udacity.asteroidradar.domain.Asteroid
+import com.udacity.asteroidradar.database.DatabaseAsteroid
 
 @JsonClass(generateAdapter = true)
 data class NetworkAsteroidResponse(
@@ -62,11 +62,11 @@ data class NetworkAsteroid(
     }
 }
 
-fun NetworkAsteroidResponse.asDatabaseModel(): Array<com.udacity.asteroidradar.database.DatabaseAsteroid> {
+fun NetworkAsteroidResponse.asDatabaseModel(): Array<DatabaseAsteroid> {
     return asteroids
         .flatMap { it.value }
         .map {
-            com.udacity.asteroidradar.database.DatabaseAsteroid(
+            DatabaseAsteroid(
                 id = it.id,
                 name = it.name,
                 absoluteMagnitude = it.absoluteMagnitude,
