@@ -6,6 +6,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.getCurrentDateString
+import com.udacity.asteroidradar.getCurrentDateStringPlusDays
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -16,6 +17,7 @@ interface AsteroidService {
     @GET("neo/rest/v1/feed")
     suspend fun getSteroids(
         @Query("start_date") startDate: String = getCurrentDateString(),
+        @Query("end_date") endDate: String = getCurrentDateStringPlusDays(7),
         @Query("api_key") apiKey: String = Constants.API_KEY
     ): NetworkAsteroidResponse
 
@@ -36,5 +38,5 @@ object Network {
         .addCallAdapterFactory(CoroutineCallAdapterFactory())
         .build()
 
-    val asteroidService = retrofit.create(AsteroidService::class.java)
+    val asteroidService: AsteroidService = retrofit.create(AsteroidService::class.java)
 }

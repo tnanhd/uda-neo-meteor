@@ -19,6 +19,11 @@ class DetailFragment : Fragment() {
         val asteroid = DetailFragmentArgs.fromBundle(requireArguments()).selectedAsteroid
 
         binding.asteroid = asteroid
+        binding.detailImage.contentDescription = if (asteroid.isPotentiallyHazardous) {
+            getString(R.string.potentially_hazardous_asteroid_image)
+        } else {
+            getString(R.string.not_hazardous_asteroid_image)
+        }
 
         binding.helpButton.setOnClickListener {
             displayAstronomicalUnitExplanationDialog()

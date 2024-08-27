@@ -12,7 +12,7 @@ import com.udacity.asteroidradar.databinding.FragmentMainBinding
 import com.udacity.asteroidradar.viewmodels.AsteroidViewModel
 
 class MainFragment : Fragment() {
-
+    private lateinit var binding: FragmentMainBinding
     private val viewModel: AsteroidViewModel by lazy {
         val activity = requireNotNull(this.activity) {
             "You can only access the viewModel after onViewCreated()"
@@ -30,6 +30,17 @@ class MainFragment : Fragment() {
         viewModel.asteroids.observe(viewLifecycleOwner) {
             it.apply {
                 viewModelAdapter?.submitList(it)
+            }
+        }
+
+        binding.activityMainImageOfTheDay.contentDescription = getString(
+            R.string.nasa_picture_of_day_content_description_format,
+            viewModel.pictureOfDay.value?.title
+        )
+        viewModel.pictureOfDay.observe(viewLifecycleOwner) {
+            it?.let {
+                binding.activityMainImageOfTheDay.contentDescription =
+                    getString(R.string.nasa_picture_of_day_content_description_format, it.title)
             }
         }
 
@@ -51,6 +62,7 @@ class MainFragment : Fragment() {
                     R.id.show_saved_menu -> {
                         true
                     }
+
                     else -> false
                 }
             }
@@ -62,7 +74,7 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentMainBinding.inflate(inflater)
+        binding = FragmentMainBinding.inflate(inflater)
         binding.lifecycleOwner = this
 
         binding.viewModel = viewModel
