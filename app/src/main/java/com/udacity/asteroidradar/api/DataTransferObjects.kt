@@ -13,6 +13,7 @@ data class NetworkAsteroidResponse(
 @JsonClass(generateAdapter = true)
 data class NetworkAsteroid(
     val id: String,
+    val name: String,
     @Json(name = "absolute_magnitude_h")
     val absoluteMagnitude: Double,
     @Json(name = "estimated_diameter")
@@ -61,28 +62,13 @@ data class NetworkAsteroid(
     }
 }
 
-fun NetworkAsteroidResponse.asDomainModel(): List<com.udacity.asteroidradar.domain.Asteroid> {
-    return asteroids
-        .flatMap { it.value }
-        .map {
-            Asteroid(
-                id = it.id,
-                absoluteMagnitude = it.absoluteMagnitude,
-                estimatedDiameter = it.estimatedDiameter.kilometers.estimatedDiameterMax,
-                isPotentiallyHazardous = it.isPotentiallyHazardous,
-                closeApproachDate = it.closeApproachData[0].closeApproachDate,
-                relativeVelocity = it.closeApproachData[0].relativeVelocity.kilometersPerSecond,
-                distanceFromEarth = it.closeApproachData[0].missDistance.astronomical
-            )
-        }
-}
-
 fun NetworkAsteroidResponse.asDatabaseModel(): Array<com.udacity.asteroidradar.database.DatabaseAsteroid> {
     return asteroids
         .flatMap { it.value }
         .map {
             com.udacity.asteroidradar.database.DatabaseAsteroid(
                 id = it.id,
+                name = it.name,
                 absoluteMagnitude = it.absoluteMagnitude,
                 estimatedDiameterMax = it.estimatedDiameter.kilometers.estimatedDiameterMax,
                 isPotentiallyHazardous = it.isPotentiallyHazardous,

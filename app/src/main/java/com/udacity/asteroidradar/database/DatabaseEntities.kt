@@ -8,6 +8,7 @@ import com.udacity.asteroidradar.domain.Asteroid
 data class DatabaseAsteroid(
     @PrimaryKey
     val id: String,
+    val name: String,
     val absoluteMagnitude: Double,
     val estimatedDiameterMax: Double,
     val isPotentiallyHazardous: Boolean,
@@ -20,6 +21,7 @@ fun List<DatabaseAsteroid>.asDomainModel(): List<Asteroid> {
     return map {
         Asteroid(
             id = it.id,
+            name = it.name,
             absoluteMagnitude = it.absoluteMagnitude,
             estimatedDiameter = it.estimatedDiameterMax,
             isPotentiallyHazardous = it.isPotentiallyHazardous,

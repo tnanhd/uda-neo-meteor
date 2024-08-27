@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 class AsteroidViewModel(application: Application) : AndroidViewModel(application) {
     private val database = getDatabase(application)
     private val asteroidRepository = AsteroidRepository(database)
-    val asteroids = asteroidRepository.nearEarthObjects
+    val asteroids = asteroidRepository.asteroids
 
     init {
         viewModelScope.launch {
