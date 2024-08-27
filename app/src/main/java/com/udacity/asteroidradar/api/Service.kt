@@ -4,9 +4,12 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.udacity.asteroidradar.Constants
+import com.udacity.asteroidradar.PictureOfDay
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+
+enum class ApiStatus { LOADING, ERROR, DONE }
 
 interface AsteroidService {
     @GET("neo/rest/v1/feed?api_key=${Constants.API_KEY}")
@@ -14,6 +17,9 @@ interface AsteroidService {
         @Query("start_date") startDate: String = "2024-08-27",
         @Query("end_date") endDate: String = "2024-08-27"
     ): NetworkAsteroidResponse
+
+    @GET("planetary/apod?api_key=${Constants.API_KEY}")
+    suspend fun getPictureOfDay(): PictureOfDay
 }
 
 private val moshi = Moshi.Builder()
